@@ -1,0 +1,16 @@
+{
+  "local": {
+    "username": "telcel",
+    "password": "Passw0rd",
+    "database": "true-north",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "development": {
+    "username": "",
+    "password": "",
+    "database": "true-north",
+    "host": "",
+    "dialect": "mysql"
+  }
+}
