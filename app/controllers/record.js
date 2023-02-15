@@ -9,40 +9,62 @@ const {
   HTTP_CODES: { SUCCESS, CREATED, NOT_FOUND },
 } = require("../constants");
 const User = require("../../models/user");
-const { validateQueryParams } = require("../utils/helpers");
+const {
+  validateQueryParams,
+  getFieldOrderCondition,
+} = require("../utils/helpers");
 const { getOperationResult } = require("../utils/helpers/operationHelper");
 
 const findAllRecords = async (req, res) => {
-  const paramsValidated = validateQueryParams(req.query);
+  let paramsValidated = validateQueryParams(req.query);
+  let orderArray = [];
 
   const page = paramsValidated.page ? paramsValidated.page : 0;
   const limit = paramsValidated.pageSize
     ? parseInt(paramsValidated.pageSize, 10)
     : 10;
 
+  orderArray = getFieldOrderCondition(paramsValidated.orderBy);
+  orderArray.push(paramsValidated.order?.toUpperCase() || "ASC");
+
+  delete paramsValidated.orderBy;
+  delete paramsValidated.order;
   delete paramsValidated.page;
   delete paramsValidated.pageSize;
-  console.log("tokenRefreshed CONTROLLER", req.tokenRefreshed);
-  console.log("paramsValidated", paramsValidated);
-  console.log("page", page);
-  console.log("limit", limit);
+
+  paramsValidated = {
+    ...paramsValidated,
+    is_archived: 0,
+  };
 
   const offset = page * limit;
   try {
-    const totalRecords = await RecordModel.count();
+    const totalRecords = await RecordModel.count({ where: paramsValidated });
     Logger.info(`total records ${totalRecords}`);
     if (offset <= totalRecords) {
       const records = await RecordModel.findAll({
         offset,
         limit,
         where: paramsValidated,
+        // order: [["operation", "type", "ASC"]],
+        order: [orderArray],
         include: [
-          { model: OperationModel, attributes: ["id", "type", "cost"] },
-          { model: User, attributes: ["username", "id"] },
+          {
+            model: OperationModel,
+            attributes: ["id", "type", "cost"],
+            // separate: true,
+            as: "operation",
+          },
+          {
+            model: User,
+            attributes: ["username", "id"],
+            // separate: true,
+            as: "user",
+          },
         ],
       });
       Logger.info(
-        `Records found with page size and pagination ${records.length}`,
+        `Records found with page size and pagination ${records.length}`
       );
       return successResponse(
         req,
@@ -50,15 +72,16 @@ const findAllRecords = async (req, res) => {
         {
           message: records.length ? "Records recovered" : "Records empty",
           records,
+          totalRecords,
         },
-        SUCCESS,
+        SUCCESS
       );
     }
     return errorResponse(
       res,
       "There aren't records with the pagination specified",
       { message: "" },
-      NOT_FOUND,
+      NOT_FOUND
     );
   } catch (error) {
     Logger.error({ error }, "Error recover all records");
@@ -72,7 +95,7 @@ const findLastRecordByUserId = async (req, res) => {
     const latestRecord = await RecordModel.findOne({
       order: [["createdAt", "DESC"]],
       where: { userId },
-      include: [{ model: User, attributes: ["username", "id"] }],
+      include: [{ model: User, attributes: ["username", "id"], as: "user" }],
     });
 
     if (!latestRecord) {
@@ -80,7 +103,7 @@ const findLastRecordByUserId = async (req, res) => {
         res,
         `Record not found for user id ${userId}`,
         { message: "" },
-        NOT_FOUND,
+        NOT_FOUND
       );
     }
 
@@ -105,7 +128,7 @@ const findLastRecordByUserId = async (req, res) => {
           createdAt,
         },
       },
-      SUCCESS,
+      SUCCESS
     );
   } catch (error) {
     Logger.error({ error }, "Error recover latest record ");
@@ -114,9 +137,8 @@ const findLastRecordByUserId = async (req, res) => {
 };
 
 const createRecordOperation = async (req, res) => {
-  const {
-    amount, valueOne, valueTwo, userBalance, operationId, userId
-  } = req.body;
+  const { amount, valueOne, valueTwo, userBalance, operationId, userId } =
+    req.body;
   try {
     const { type, cost } = await OperationModel.findByPk(operationId);
     console.log("cost", cost);
@@ -149,7 +171,7 @@ const createRecordOperation = async (req, res) => {
         message: "Records created successfully",
         result,
       },
-      CREATED,
+      CREATED
     );
   } catch (error) {
     Logger.error({ error }, "Error user not found");
@@ -168,7 +190,7 @@ const softDeleteRecord = async (req, res) => {
       {
         is_archived: true,
       },
-      { where: { id } },
+      { where: { id } }
     );
     Logger.info({ record: recordUpdated }, "Soft delete successfully");
     successResponse(req, res, "Record delete it successfully");

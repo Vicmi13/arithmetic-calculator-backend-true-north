@@ -12,7 +12,7 @@ const {
 const { sanitizeUser } = require("../utils/helpers");
 
 exports.login = async (req, res) => {
-  // TODO agregar validator de campos
+  // TODO add a filed validator
   const { email, password } = req.body;
   try {
     const userFound = await usernameExists(email);
@@ -21,10 +21,7 @@ exports.login = async (req, res) => {
       //   const user = UserModel.bind(userFound.dataValues);
       //   console.log("user model", user);
       if (userIsBlocked(userFound)) {
-        const isPasswordMatch = await verifyPasssword(
-          req.body.password,
-          userFound
-        );
+        const isPasswordMatch = await verifyPasssword(password, userFound);
         Logger.info({ isPasswordMatch }, "credentials correct");
         const {
           dataValues: { username, status, id },

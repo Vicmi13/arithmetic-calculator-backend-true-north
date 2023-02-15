@@ -32,10 +32,10 @@ const Record = sequelizeConnection.define("record", {
   },
 });
 
-Record.belongsTo(Operation);
+Record.belongsTo(Operation, { as: "operation" });
 Operation.hasOne(Record);
 
-Record.belongsTo(User);
+Record.belongsTo(User, { as: "user" });
 User.hasOne(Record);
 
 module.exports = Record;

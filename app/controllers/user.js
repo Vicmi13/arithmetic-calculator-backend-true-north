@@ -50,7 +50,6 @@ const findOneById = async (req, res) => {
   }
 };
 
-/** TODO move function fromm here   */
 const usernameExists = async (email) => {
   const response = await UserModel.findOne({ where: { username: email } });
   return response;

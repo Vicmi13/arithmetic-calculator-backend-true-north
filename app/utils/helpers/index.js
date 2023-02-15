@@ -47,3 +47,42 @@ exports.validateQueryParams = (bodyQuery) => {
   });
   return where;
 };
+
+exports.getFieldOrderCondition = (name) => {
+  const orderArray = [[]];
+  // order: [["operation", "type", "ASC"]],
+  switch (name) {
+    case "id":
+      orderArray[0] = "id";
+      break;
+
+    case "operation":
+      orderArray[0] = "operation";
+      orderArray[1] = "type";
+      break;
+
+    case "response":
+      orderArray[0] = "operation_response";
+      break;
+
+    case "cost":
+      orderArray[0] = "operation";
+      orderArray[1] = "cost";
+      break;
+
+    case "balance":
+      orderArray[0] = "user_balance";
+      break;
+
+    case "date":
+      orderArray[0] = "createdAt";
+      break;
+
+    default:
+      // orderArray[0] = "record";
+      orderArray[0] = "id";
+      break;
+  }
+
+  return orderArray;
+};
