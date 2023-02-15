@@ -11,7 +11,7 @@
     "migration-dev": "sequelize db:migrate --env 'development' ",
     "undomigration-all-local": "sequelize db:migrate:undo:all --env 'local' ",
     "seeders-local": "NODE_ENV=local sequelize-cli --seeders-path seeders/development db:seed:all",
-    "seeders-dev": "NODE_ENV=development sequelize-cli --seeders-path seeders/production db:seed:all"
+    "seeders-dev": "NODE_ENV=development sequelize-cli --seeders-path seeders/development db:seed:all"
   },
   "author": "",
   "license": "ISC",
