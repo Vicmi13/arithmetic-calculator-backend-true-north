@@ -21,7 +21,7 @@
 - Once you have installed nvm, you can install the version `nvm i 18.10.0`
 - Set the Node version to be used: `nvm use 18.10.0`
 
-## Setup local
+## Local setup
 
 In case you want to execute the project locally the back end uses Sequelize as ORM,
 and has migration and seeders file for create and insert initial values required for run the project
@@ -37,20 +37,21 @@ This commands create the tables and insert data in the catalog for arithmetic op
 
 # API resources
 
-Share the [URL](https://api.postman.com/collections/2815463-8d4c7d58-4f4d-4c63-9dd3-9353d01e0ece?access_key=PMAT-01GSBK1TC14EZ8SFQM6RST3SB2) for postman collection with backen end endpoints.
+I shared the [URL](https://api.postman.com/collections/2815463-8d4c7d58-4f4d-4c63-9dd3-9353d01e0ece?access_key=PMAT-01GSBK1TC14EZ8SFQM6RST3SB2) for postman collection with backen end endpoints.
 PS. All are pointing to localhost, in case you want to hit
 the develop environment, here's the base [url](http://arithmeticcalculator-env.eba-ejcwhe8a.us-west-2.elasticbeanstalk.com/)
 
-- `/user` endpoint it's public so that create any number of users of your preference
+- `/user` endpoint it's public so that create any number of users of your preference and
+  with that token start to explore the other resource
+
 - All the other resource are protected and required the token in headers -> Authorization param
-  i.e. Authorization - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthbGVpQGhvdG1haWwuY29tIiwic3RhdHVzIjp0cnVlLCJpZCI6MiwiaWF0IjoxNjc2NDk2MjE1LCJleHAiOjE2NzY0OTc0MTV9.L6Qu6Ats_ghtzP7gwKIHsoInfen2ZiBWK2mqdPodcdU
+  i.e. `Authorization - eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImthbGVpQGhvdG1haWwuY29tIiwic3RhdHVzIjp0cnVlLCJpZCI6MiwiaWF0IjoxNjc2NDk2MjE1LCJleHAiOjE2NzY0OTc0MTV9.L6Qu6Ats_ghtzP7gwKIHsoInfen2ZiBWK2mqdPodcdU`
 
 # Develop environment
 
 The live version uses the next resources from AWS:
 
 - EBS for create the web app
-
   - ECS
   - Cloud formation
   - S3 bucket
@@ -59,4 +60,5 @@ The live version uses the next resources from AWS:
   - develop environment
 
 - RDS with Mysql
-  \
+
+Enjoy it!!
