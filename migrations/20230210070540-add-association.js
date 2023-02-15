@@ -2,7 +2,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     queryInterface
-      .addColumn("Records", "id_user", {
+      .addColumn("Records", "userId", {
         type: Sequelize.INTEGER,
         references: {
           model: "Users",
@@ -12,7 +12,7 @@ module.exports = {
         onDelete: "SET NULL",
       })
       .then(() =>
-        queryInterface.addColumn("Records", "id_operation", {
+        queryInterface.addColumn("Records", "operationId", {
           type: Sequelize.INTEGER,
           references: {
             model: "Operations",
@@ -25,6 +25,6 @@ module.exports = {
   down: (queryInterface, Sequelize) =>
     // remove distribution_notifications hasOne distributions, siteId, userId
     queryInterface
-      .removeColumn("Records", "id_user")
-      .then(() => queryInterface.removeColumn("Records", "id_operation")),
+      .removeColumn("Records", "userId")
+      .then(() => queryInterface.removeColumn("Records", "operationId")),
 };

@@ -1,3 +1,6 @@
+/* eslint-disable no-param-reassign */
+const Logger = require("../logger");
+
 /**
  * Event listener for HTTP server "error" event.
  */
@@ -12,11 +15,11 @@ exports.onErrorListener = (error) => {
   // handle specific listen errors with friendly messages
   switch (error.code) {
     case "EACCES":
-      console.error(`${bind} requires elevated privileges`);
+      Logger.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case "EADDRINUSE":
-      console.error(`${bind} is already in use`);
+      Logger.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
@@ -33,4 +36,14 @@ exports.sanitizeUserList = (userList) =>
 exports.sanitizeUser = (user) => {
   delete user.dataValues.password;
   return user;
+};
+
+exports.validateQueryParams = (bodyQuery) => {
+  const where = {};
+  Object.entries(bodyQuery).forEach(([key, value]) => {
+    if (value !== "" && value !== undefined) {
+      where[key] = value;
+    }
+  });
+  return where;
 };

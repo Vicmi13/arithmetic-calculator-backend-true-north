@@ -26,9 +26,12 @@ exports.login = async (req, res) => {
           userFound
         );
         Logger.info({ isPasswordMatch }, "credentials correct");
-        const token = await generateJwtToken(sanitizeUser(userFound));
+        const {
+          dataValues: { username, status, id },
+        } = sanitizeUser(userFound);
+        const token = await generateJwtToken({ email: username, status, id });
         console.log("TOKEN", token);
-        successResponse(res, { token });
+        successResponse(req, res, { token });
       }
     } else {
       throw Error("User email is not registered previously");

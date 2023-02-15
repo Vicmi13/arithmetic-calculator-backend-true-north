@@ -1,15 +1,16 @@
 const operationModel = require("../../models/operation");
 const {
-  HTTP_CODES: { SUCCESS },
+  HTTP_CODES: { SUCCESS, NOT_FOUND },
 } = require("../constants");
 const Logger = require("../utils/logger");
 const { errorResponse, successResponse } = require("../utils/response-handler");
 
-const findAllOperations = async (__, res) => {
+const findAllOperations = async (req, res) => {
   try {
-    const operations = await operationModel().findAll();
+    const operations = await operationModel.findAll();
     Logger.info({ operations }, "Operations catalog ");
     successResponse(
+      req,
       res,
       {
         message: operations.length
@@ -29,9 +30,14 @@ const findOperationById = async (req, res) => {
   try {
     const { id } = req.params;
     console.log("ID OPERATION", req.params);
-    const operationFound = await operationModel().findByPk(id);
+    const operationFound = await operationModel.findByPk(id);
     if (!operationFound) {
-      return res.status(404).json({ message: "User not found or inactive" });
+      return errorResponse(
+        res,
+        `Operation not found with id ${id}`,
+        { message: "" },
+        NOT_FOUND
+      );
     }
     return res.status(200).json({
       message: "Operation found ",

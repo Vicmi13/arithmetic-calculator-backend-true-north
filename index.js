@@ -10,6 +10,7 @@ const { URL_BASE_BACKEND } = require("./app/constants");
 const UserRoutes = require("./app/routes/user");
 const AuthRoutes = require("./app/routes/auth");
 const OperationRoutes = require("./app/routes/operation");
+const RecorRoutess = require("./app/routes/record");
 
 const app = express();
 
@@ -34,7 +35,7 @@ app.get("/", (_, res) => {
 app.use(`${URL_BASE_BACKEND}/user`, UserRoutes);
 app.use(`${URL_BASE_BACKEND}/login`, AuthRoutes);
 app.use(`${URL_BASE_BACKEND}/operation`, OperationRoutes);
-// app.use(`${BASE_URL_BACKEND}/operations`, mailChimpRouter);
+app.use(`${URL_BASE_BACKEND}/record`, RecorRoutess);
 // app.use(`${BASE_URL_BACKEND}/records`, mailChimpRouter);
 
 app.listen(process.env.PORT || 3000, () => {

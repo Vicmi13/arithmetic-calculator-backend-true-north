@@ -1,3 +1,4 @@
+/* eslint-disable implicit-arrow-linebreak */
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -7,14 +8,12 @@ exports.verifyPasssword = async (passwordFromLogin, user) => {
     user.password
   );
   if (isPasswordmatch) return isPasswordmatch;
-  throw Error("Password incorrect, try again");
+  throw Error("Incorrect password, please try again");
 };
 
 exports.generateJwtToken = (userInfo) => {
-  const {
-    dataValues: { username, status },
-  } = userInfo;
-  return jwt.sign({ email: username, status }, process.env.JWT_SECRET, {
+  const { email, status, id } = userInfo;
+  return jwt.sign({ email, status, id }, process.env.JWT_SECRET, {
     expiresIn: `${process.env.JWT_EXPIRATION_IN_MINUTES}m`,
   });
 };

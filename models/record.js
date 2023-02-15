@@ -1,32 +1,41 @@
 "use strict";
 
-const { Model, DataTypes } = require("sequelize");
-const sequelize = require("../config/sequelize");
-const operationModel = require("./operation");
+const { DataTypes } = require("sequelize");
+const sequelizeConnection = require("../config/sequelize");
+const Operation = require("./operation");
+const User = require("./user");
 
-module.exports = () => {
-  class Record extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      this.belongsTo(operationModel());
-      Record().hasOne(models.operation);
-    }
-  }
-  Record.init(
-    {
-      amount: DataTypes.FLOAT,
-      user_balance: DataTypes.FLOAT,
-      operation_response: DataTypes.STRING,
-      is_archived: { type: DataTypes.BOOLEAN, defaultValue: false },
+const Record = sequelizeConnection.define("record", {
+  amount: { type: DataTypes.FLOAT },
+  user_balance: { type: DataTypes.FLOAT },
+  operation_response: { type: DataTypes.STRING },
+  is_archived: { type: DataTypes.BOOLEAN, defaultValue: false },
+  operationId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      notNull: {
+        args: true,
+        msg: "operationId is required",
+      },
     },
-    {
-      sequelize,
-      modelName: "Record",
-    }
-  );
-  return Record;
-};
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      notNull: {
+        args: true,
+        msg: "userId is required",
+      },
+    },
+  },
+});
+
+Record.belongsTo(Operation);
+Operation.hasOne(Record);
+
+Record.belongsTo(User);
+User.hasOne(Record);
+
+module.exports = Record;
