@@ -58,7 +58,7 @@ The live version uses the next resources from AWS:
   - Securtiy groups
   - Cloudwatch
   - develop environment
-
+- Codepipeline
 - RDS with Mysql
 
 Enjoy it!!
