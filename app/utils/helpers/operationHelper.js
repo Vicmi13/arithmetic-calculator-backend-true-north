@@ -11,9 +11,9 @@ exports.getOperationResult = (type, valueOne, valueTwo) => {
   let result = 0;
 
   const firstNumb =
-    typeof valueOne === "number" ? valueOne : parseInt(valueOne, 10);
+    typeof valueOne === typeof "number" ? valueOne : parseInt(valueOne, 10);
   const secondNumb =
-    typeof valueTwo === "number" ? valueTwo : parseInt(valueTwo, 10);
+    typeof valueTwo === typeof "number" ? valueTwo : parseInt(valueTwo, 10);
 
   switch (type) {
     case "addition":

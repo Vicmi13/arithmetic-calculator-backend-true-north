@@ -24,7 +24,12 @@ const authenticateToken = (req, res, next) => {
         message:
           err.name === JWT_EXPIRED ? "The token has expired" : "Invalid token",
       };
-      return errorResponse(res, "Error in JWT", errorObject, FORBIDDEN);
+      return errorResponse(
+        res,
+        err.name === JWT_EXPIRED ? JWT_EXPIRED : JWT_INVALID_SIGNATURE,
+        errorObject,
+        FORBIDDEN
+      );
     }
 
     const { email, status, id } = userData;

@@ -1,4 +1,6 @@
 /* eslint-disable camelcase */
+
+const randomstring = require("randomstring");
 const RecordModel = require("../../models/record");
 const OperationModel = require("../../models/operation");
 const Logger = require("../utils/logger");
@@ -40,7 +42,7 @@ const findAllRecords = async (req, res) => {
         ],
       });
       Logger.info(
-        `Records found with page size and pagination ${records.length}`
+        `Records found with page size and pagination ${records.length}`,
       );
       return successResponse(
         req,
@@ -49,14 +51,14 @@ const findAllRecords = async (req, res) => {
           message: records.length ? "Records recovered" : "Records empty",
           records,
         },
-        SUCCESS
+        SUCCESS,
       );
     }
     return errorResponse(
       res,
       "There aren't records with the pagination specified",
       { message: "" },
-      NOT_FOUND
+      NOT_FOUND,
     );
   } catch (error) {
     Logger.error({ error }, "Error recover all records");
@@ -78,7 +80,7 @@ const findLastRecordByUserId = async (req, res) => {
         res,
         `Record not found for user id ${userId}`,
         { message: "" },
-        NOT_FOUND
+        NOT_FOUND,
       );
     }
 
@@ -103,7 +105,7 @@ const findLastRecordByUserId = async (req, res) => {
           createdAt,
         },
       },
-      SUCCESS
+      SUCCESS,
     );
   } catch (error) {
     Logger.error({ error }, "Error recover latest record ");
@@ -112,22 +114,24 @@ const findLastRecordByUserId = async (req, res) => {
 };
 
 const createRecordOperation = async (req, res) => {
-  /**
-     * "amount" : "1",
-    "firstValue": "7",
-    "secondValue": "8",
-    "userBalance": "99",    
-    "operationId": "1",
-    "userId": "1"
-     */
-  const { amount, valueOne, valueTwo, userBalance, operationId, userId } =
-    req.body;
+  const {
+    amount, valueOne, valueTwo, userBalance, operationId, userId
+  } = req.body;
   try {
     const { type, cost } = await OperationModel.findByPk(operationId);
     console.log("cost", cost);
     console.log("operation", type);
 
-    const operationResponse = getOperationResult(type, valueOne, valueTwo);
+    let operationResponse;
+    if (type !== "random-string") {
+      operationResponse = getOperationResult(type, valueOne, valueTwo);
+    } else {
+      // call random string API
+      operationResponse = randomstring.generate({
+        length: 12,
+        charset: "alphabetic",
+      });
+    }
     console.log("RESULT", operationResponse);
 
     const result = await RecordModel.create({
@@ -145,7 +149,7 @@ const createRecordOperation = async (req, res) => {
         message: "Records created successfully",
         result,
       },
-      CREATED
+      CREATED,
     );
   } catch (error) {
     Logger.error({ error }, "Error user not found");
@@ -164,7 +168,7 @@ const softDeleteRecord = async (req, res) => {
       {
         is_archived: true,
       },
-      { where: { id } }
+      { where: { id } },
     );
     Logger.info({ record: recordUpdated }, "Soft delete successfully");
     successResponse(req, res, "Record delete it successfully");
